@@ -271,3 +271,19 @@ button:disabled {
 button.button-success {
     background: #0f9c63;
 }
+.user-license {
+    margin-top: 16px;
+}
+
+.user-license .hint {
+    font-size: 13px;
+    color: #475569;
+    margin: 4px 0 12px;
+}
+
+.quick-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 12px 0;
+}

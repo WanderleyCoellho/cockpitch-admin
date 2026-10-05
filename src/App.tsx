@@ -101,6 +101,13 @@ export function App() {
     const [licensePolicy, setLicensePolicy] = useState<LicensePolicy>('STANDARD')
     const [licensePolicyNote, setLicensePolicyNote] = useState('')
 
+    // Edição de licença direto pela lista de usuários (sem depender de comprovante).
+    const [managedUserId, setManagedUserId] = useState<string | null>(null)
+    const [userPlanTier, setUserPlanTier] = useState<PlanTier>('PRO')
+    const [userBillingStatus, setUserBillingStatus] = useState<BillingStatus>('ACTIVE')
+    const [userPolicy, setUserPolicy] = useState<LicensePolicy>('STANDARD')
+    const [userPolicyNote, setUserPolicyNote] = useState('')
+
     const selectedReceipt = useMemo(
         () => receipts.find((item) => item.id === selectedReceiptId) || null,
         [receipts, selectedReceiptId]
@@ -357,6 +364,52 @@ export function App() {
         }
     }
 
+    const managedUser = useMemo(() => users.find((item) => item.id === managedUserId) || null, [users, managedUserId])
+
+    function openUserLicense(user: UserItem) {
+        setManagedUserId(user.id)
+        setUserPlanTier(user.planTier)
+        setUserBillingStatus(user.billingStatus)
+        setUserPolicy(user.licensePolicy)
+        setUserPolicyNote('')
+    }
+
+    async function applyUserLicense(override?: { planTier: PlanTier; billingStatus: BillingStatus; licensePolicy: LicensePolicy; note: string }) {
+        if (!managedUser) return
+        const payload = override ?? {
+            planTier: userPlanTier,
+            billingStatus: userBillingStatus,
+            licensePolicy: userPolicy,
+            note: userPolicyNote
+        }
+
+        setBusy(true)
+        setError('')
+        setMessage('')
+
+        try {
+            await request(`/internal/licensing/users/${managedUser.id}`, {
+                method: 'PATCH',
+                body: JSON.stringify({
+                    planTier: payload.planTier,
+                    billingStatus: payload.billingStatus,
+                    licensePolicy: payload.licensePolicy,
+                    licensePolicyNote: payload.note || undefined,
+                    notes: 'Atualizacao manual pela lista de usuarios (Lumen Deal Ops)'
+                })
+            })
+
+            setMessage(`Licenca de ${managedUser.email} atualizada`)
+            setManagedUserId(null)
+            await loadAll()
+        } catch (err) {
+            const msg = err instanceof Error ? err.message : 'Falha ao atualizar licenca'
+            setError(msg)
+        } finally {
+            setBusy(false)
+        }
+    }
+
     function saveSettings() {
         localStorage.setItem('ops_admin_email', opsEmail.trim())
         localStorage.removeItem('ops_internal_api_key')
@@ -467,6 +520,7 @@ export function App() {
                                     <th>Cobranca</th>
                                     <th>Politica</th>
                                     <th>Criado em</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -478,10 +532,81 @@ export function App() {
                                         <td>{user.billingStatus}</td>
                                         <td>{user.licensePolicy}</td>
                                         <td>{fmtDate(user.createdAt)}</td>
+                                        <td>
+                                            <button onClick={() => openUserLicense(user)} disabled={busy}>
+                                                Gerenciar licenca
+                                            </button>
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
+                    </div>
+                )}
+
+                {managedUser && (
+                    <div className="panel user-license">
+                        <h3>Licenca de {managedUser.name} ({managedUser.email})</h3>
+                        <p className="hint">
+                            A licenca vale para a empresa (workspace) que essa pessoa possui. Cortesia com plano AGENCY libera
+                            o plano Equipe (10 pessoas); com PRO, o Profissional (3 pessoas).
+                        </p>
+                        <div className="quick-actions">
+                            <button
+                                onClick={() => applyUserLicense({ planTier: 'AGENCY', billingStatus: 'ACTIVE', licensePolicy: 'COURTESY', note: 'Cortesia Equipe' })}
+                                disabled={busy}
+                                className="button-success"
+                            >
+                                Cortesia Equipe (10 pessoas)
+                            </button>
+                            <button
+                                onClick={() => applyUserLicense({ planTier: 'PRO', billingStatus: 'ACTIVE', licensePolicy: 'COURTESY', note: 'Cortesia Profissional' })}
+                                disabled={busy}
+                            >
+                                Cortesia Profissional (3 pessoas)
+                            </button>
+                            <button
+                                onClick={() => applyUserLicense({ planTier: 'FREE', billingStatus: 'INACTIVE', licensePolicy: 'STANDARD', note: '' })}
+                                disabled={busy}
+                            >
+                                Voltar ao Gratis
+                            </button>
+                        </div>
+                        <div className="grid2">
+                            <label>
+                                Plano
+                                <select value={userPlanTier} onChange={(e) => setUserPlanTier(e.target.value as PlanTier)}>
+                                    <option value="FREE">FREE (Gratis)</option>
+                                    <option value="STARTER">STARTER (Essencial)</option>
+                                    <option value="PRO">PRO (Profissional)</option>
+                                    <option value="AGENCY">AGENCY (Equipe)</option>
+                                </select>
+                            </label>
+                            <label>
+                                Cobranca
+                                <select value={userBillingStatus} onChange={(e) => setUserBillingStatus(e.target.value as BillingStatus)}>
+                                    <option value="INACTIVE">INACTIVE</option>
+                                    <option value="ACTIVE">ACTIVE</option>
+                                    <option value="PAST_DUE">PAST_DUE</option>
+                                    <option value="CANCELED">CANCELED</option>
+                                </select>
+                            </label>
+                            <label>
+                                Politica
+                                <select value={userPolicy} onChange={(e) => setUserPolicy(e.target.value as LicensePolicy)}>
+                                    <option value="STANDARD">STANDARD</option>
+                                    <option value="COURTESY">COURTESY</option>
+                                </select>
+                            </label>
+                            <label>
+                                Nota da politica
+                                <input value={userPolicyNote} onChange={(e) => setUserPolicyNote(e.target.value)} />
+                            </label>
+                        </div>
+                        <div className="quick-actions">
+                            <button onClick={() => applyUserLicense()} disabled={busy}>Aplicar licenca</button>
+                            <button onClick={() => setManagedUserId(null)} disabled={busy}>Cancelar</button>
+                        </div>
                     </div>
                 )}
             </section>
