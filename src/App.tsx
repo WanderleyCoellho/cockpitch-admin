@@ -312,7 +312,7 @@ export function App() {
                     billingStatus: licenseBillingStatus,
                     licensePolicy,
                     licensePolicyNote: licensePolicyNote || undefined,
-                    notes: 'Aprovacao em um clique via Cockpitch Ops'
+                    notes: 'Aprovacao em um clique via Lumen Deal Ops'
                 })
             })
 
@@ -343,7 +343,7 @@ export function App() {
                     billingStatus: licenseBillingStatus,
                     licensePolicy,
                     licensePolicyNote: licensePolicyNote || undefined,
-                    notes: 'Atualizacao via Cockpitch Ops'
+                    notes: 'Atualizacao via Lumen Deal Ops'
                 })
             })
 
@@ -396,7 +396,7 @@ export function App() {
     return (
         <div className="app-shell">
             <header className="topbar">
-                <h1>Cockpitch Ops</h1>
+                <h1>Lumen Deal Ops</h1>
                 <p>Painel operacional de licencas e comprovantes</p>
             </header>
 

@@ -1,4 +1,4 @@
-# Cockpitch Ops
+# Lumen Deal Ops
 
 Painel operacional para triagem de comprovantes e gestão manual de licenças.
 

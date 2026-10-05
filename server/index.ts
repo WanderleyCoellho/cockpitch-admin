@@ -34,6 +34,6 @@ app.get('*', (_req, res) => {
 })
 
 app.listen(port, () => {
-    console.log(`[cockpitch-ops-bff] running on http://localhost:${port}`)
-    console.log(`[cockpitch-ops-bff] proxying /api -> ${backendTarget}`)
+    console.log(`[lumen-deal-ops-bff] running on http://localhost:${port}`)
+    console.log(`[lumen-deal-ops-bff] proxying /api -> ${backendTarget}`)
 })
