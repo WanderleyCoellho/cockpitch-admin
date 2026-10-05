@@ -24,3 +24,8 @@ Painel operacional para triagem de comprovantes e gestão manual de licenças.
 - O frontend não permite configurar URL de backend em runtime.
 - Todas as chamadas usam `/api` same-origin.
 - Em produção local, o BFF encaminha `/api/*` para o backend, preservando cookies httpOnly.
+
+### Produção (Vercel)
+
+O painel é publicado na Vercel como site estático. O `vercel.json` repassa `/api/*` para a API
+no Railway (mesma origem, preservando o cookie httpOnly do Ops), sem precisar do BFF Express.
