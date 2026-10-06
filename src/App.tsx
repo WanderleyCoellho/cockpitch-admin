@@ -62,6 +62,8 @@ type UserItem = {
     updatedAt: string
     /** false = membro convidado: usa o plano da empresa em que participa. */
     ownsWorkspace?: boolean
+    /** Como a pessoa entra: senha, Google ou os dois. */
+    loginMethods?: Array<'PASSWORD' | 'GOOGLE'>
     workspaces?: UserWorkspace[]
 }
 
@@ -545,7 +547,14 @@ export function App() {
                                 {users.map((user) => (
                                     <tr key={user.id}>
                                         <td>{user.name}</td>
-                                        <td>{user.email}</td>
+                                        <td>
+                                            {user.email}
+                                            {user.loginMethods && user.loginMethods.length > 0 && (
+                                                <div className="muted" style={{ fontSize: 11 }}>
+                                                    entra com {user.loginMethods.map((m) => (m === 'GOOGLE' ? 'Google' : 'senha')).join(' e ')}
+                                                </div>
+                                            )}
+                                        </td>
                                         <td className="workspaces-cell">
                                             {(user.workspaces ?? []).length === 0 && <span className="muted">-</span>}
                                             {(user.workspaces ?? []).map((workspace) => (
