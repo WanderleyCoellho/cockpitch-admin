@@ -40,6 +40,17 @@ type Summary = {
     generatedAt: string
 }
 
+type UserWorkspace = {
+    id: string
+    name: string
+    role: 'OWNER' | 'ADMIN' | 'MEMBER'
+    planTier: PlanTier
+    billingStatus: BillingStatus
+    licensePolicy: LicensePolicy
+    effectiveTier: PlanTier
+    members: number
+}
+
 type UserItem = {
     id: string
     email: string
@@ -49,7 +60,13 @@ type UserItem = {
     licensePolicy: LicensePolicy
     createdAt: string
     updatedAt: string
+    /** false = membro convidado: usa o plano da empresa em que participa. */
+    ownsWorkspace?: boolean
+    workspaces?: UserWorkspace[]
 }
+
+const ROLE_LABEL: Record<UserWorkspace['role'], string> = { OWNER: 'dono', ADMIN: 'admin', MEMBER: 'membro' }
+const TIER_LABEL: Record<PlanTier, string> = { FREE: 'Gratis', STARTER: 'Essencial', PRO: 'Profissional', AGENCY: 'Equipe' }
 
 type OpsLoginResponse = {
     token?: string
@@ -516,7 +533,8 @@ export function App() {
                                 <tr>
                                     <th>Nome</th>
                                     <th>Email</th>
-                                    <th>Plano</th>
+                                    <th>Empresas (papel · plano em uso)</th>
+                                    <th>Plano proprio</th>
                                     <th>Cobranca</th>
                                     <th>Politica</th>
                                     <th>Criado em</th>
@@ -528,14 +546,30 @@ export function App() {
                                     <tr key={user.id}>
                                         <td>{user.name}</td>
                                         <td>{user.email}</td>
-                                        <td>{user.planTier}</td>
-                                        <td>{user.billingStatus}</td>
-                                        <td>{user.licensePolicy}</td>
+                                        <td className="workspaces-cell">
+                                            {(user.workspaces ?? []).length === 0 && <span className="muted">-</span>}
+                                            {(user.workspaces ?? []).map((workspace) => (
+                                                <div key={workspace.id}>
+                                                    <strong>{workspace.name}</strong> ({ROLE_LABEL[workspace.role]}) · {TIER_LABEL[workspace.effectiveTier]}
+                                                    {workspace.licensePolicy === 'COURTESY' && <span className="badge">cortesia</span>}
+                                                    <span className="muted"> · ate {workspace.members} pessoas</span>
+                                                </div>
+                                            ))}
+                                        </td>
+                                        <td>{user.ownsWorkspace === false ? <span className="muted">usa o da empresa</span> : user.planTier}</td>
+                                        <td>{user.ownsWorkspace === false ? <span className="muted">-</span> : user.billingStatus}</td>
+                                        <td>{user.ownsWorkspace === false ? <span className="muted">-</span> : user.licensePolicy}</td>
                                         <td>{fmtDate(user.createdAt)}</td>
                                         <td>
-                                            <button onClick={() => openUserLicense(user)} disabled={busy}>
-                                                Gerenciar licenca
-                                            </button>
+                                            {user.ownsWorkspace === false ? (
+                                                <span className="muted" title="Membro convidado: a licenca e da empresa do dono">
+                                                    Licenca do dono da empresa
+                                                </span>
+                                            ) : (
+                                                <button onClick={() => openUserLicense(user)} disabled={busy}>
+                                                    Gerenciar licenca
+                                                </button>
+                                            )}
                                         </td>
                                     </tr>
                                 ))}
