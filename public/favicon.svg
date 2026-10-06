@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="14" fill="#0F0F0F"/>
-  <circle cx="32" cy="32" r="13" fill="none" stroke="#C9A84C" stroke-width="4"/>
-  <circle cx="32" cy="32" r="4" fill="#C9A84C"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+<defs><linearGradient id="fi-arco" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#E09A1F" stop-opacity="0.12"/><stop offset="0.6" stop-color="#F5B544"/><stop offset="1" stop-color="#FFF3D6"/></linearGradient><linearGradient id="fi-raio" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#FFF3D6"/><stop offset="0.55" stop-color="#FFC85C"/><stop offset="1" stop-color="#E09A1F"/></linearGradient><linearGradient id="fi-fundo" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#231C10"/><stop offset="1" stop-color="#0B0F19"/></linearGradient></defs>
+<rect x="0.75" y="0.75" width="62.5" height="62.5" rx="14" fill="url(#fi-fundo)" stroke="#F5B544" stroke-opacity=".35" stroke-width="1.5"/>
+<g transform="translate(9.6 9.6) scale(.7)"><path d="M32 8A24 24 0 1 0 56 32" stroke="url(#fi-arco)" stroke-width="3.4" fill="none" stroke-linecap="round"/><g fill="url(#fi-raio)"><path d="M42.9 30.3 L57.0 30.5 L56.2 25.7Z"/><path d="M41.8 27.0 L59.0 21.4 L56.5 16.4Z"/><path d="M39.8 24.2 L55.9 12.3 L51.7 8.1Z"/><path d="M37.0 22.2 L47.6 7.5 L42.6 5.0Z"/><path d="M33.7 21.1 L38.3 7.8 L33.5 7.0Z"/></g><circle cx="32" cy="32" r="6" fill="#FFFFFF"/></g>
 </svg>
