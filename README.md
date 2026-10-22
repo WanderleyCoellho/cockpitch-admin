@@ -1,6 +1,12 @@
-# Cockpitch Ops
+# Lumen Deal Ops
 
-Painel operacional para triagem de comprovantes e gestão manual de licenças.
+Painel interno da Lumen Dev Studios para operar o Lumen Deal: visão geral do negócio (receita, assinantes,
+funil), empresas (ficha, Stripe, cortesia), pessoas, saúde do sistema (e-mails, Stripe, banco) e
+comprovantes PIX (fluxo antigo). Identidade visual do lumendevstudios.com; spec em
+`cockpitch-backend/specs/ops-panel.md`.
+
+Stack: React 18 + Vite, React Router, TanStack Query, Tailwind v4 (tokens da marca em `src/styles.css`),
+fontes locais via `@fontsource`. Testes: `npm test` (Vitest + Testing Library).
 
 ## Modos de execução
 
@@ -24,3 +30,8 @@ Painel operacional para triagem de comprovantes e gestão manual de licenças.
 - O frontend não permite configurar URL de backend em runtime.
 - Todas as chamadas usam `/api` same-origin.
 - Em produção local, o BFF encaminha `/api/*` para o backend, preservando cookies httpOnly.
+
+### Produção (Vercel)
+
+O painel é publicado na Vercel como site estático. O `vercel.json` repassa `/api/*` para a API
+no Railway (mesma origem, preservando o cookie httpOnly do Ops), sem precisar do BFF Express.
