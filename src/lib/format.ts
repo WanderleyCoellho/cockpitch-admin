@@ -20,7 +20,9 @@ export const EMAIL_TEMPLATE_LABEL: Record<string, string> = {
     proposal_opened: 'Proposta aberta',
     proposal_response: 'Resposta do cliente',
     acceptance_confirmation: 'Confirmação de aceite',
-    team_invite: 'Convite para equipe'
+    team_invite: 'Convite para equipe',
+    signature_code: 'Código de assinatura',
+    google_confirm: 'Confirmação de conta Google'
 }
 
 const brl = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 })
