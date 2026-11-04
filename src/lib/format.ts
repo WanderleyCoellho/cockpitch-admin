@@ -98,5 +98,12 @@ export function eventText(event: WorkspaceEvent) {
             return `Cortesia retirada${note}`
         case 'LICENSE_CHANGED':
             return `Licença ajustada: ${tier('from')} → ${tier('to')}${note}`
+        // Sinais de risco do Stripe: o Ops decide reembolsar ou cancelar no Dashboard.
+        case 'PAYMENT_DISPUTED':
+            return `Contestação aberta no cartão${typeof d.amountCents === 'number' ? ` (${money(d.amountCents)})` : ''}${d.reason ? ` — motivo: ${d.reason}` : ''}`
+        case 'PAYMENT_REFUNDED':
+            return `${d.fullyRefunded ? 'Reembolso total' : 'Reembolso parcial'}${typeof d.refundedCents === 'number' ? ` (${money(d.refundedCents)})` : ''}`
+        case 'FRAUD_WARNING':
+            return `Alerta de fraude do banco emissor${d.fraudType ? ` — ${d.fraudType}` : ''}`
     }
 }

@@ -77,6 +77,9 @@ export type WorkspaceEventType =
     | 'COURTESY_GRANTED'
     | 'COURTESY_REVOKED'
     | 'LICENSE_CHANGED'
+    | 'PAYMENT_DISPUTED'
+    | 'PAYMENT_REFUNDED'
+    | 'FRAUD_WARNING'
 
 export type WorkspaceEvent = { id: string; type: WorkspaceEventType; detail: Record<string, unknown> | null; createdAt: string }
 
