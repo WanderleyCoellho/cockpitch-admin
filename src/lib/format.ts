@@ -22,7 +22,10 @@ export const EMAIL_TEMPLATE_LABEL: Record<string, string> = {
     acceptance_confirmation: 'Confirmação de aceite',
     team_invite: 'Convite para equipe',
     signature_code: 'Código de assinatura',
-    google_confirm: 'Confirmação de conta Google'
+    google_confirm: 'Confirmação de conta Google',
+    account_deletion_code: 'Código de exclusão de conta',
+    ownership_transferred: 'Novo dono da empresa',
+    workspace_closed: 'Empresa encerrada'
 }
 
 const brl = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 })
@@ -105,5 +108,10 @@ export function eventText(event: WorkspaceEvent) {
             return `${d.fullyRefunded ? 'Reembolso total' : 'Reembolso parcial'}${typeof d.refundedCents === 'number' ? ` (${money(d.refundedCents)})` : ''}`
         case 'FRAUD_WARNING':
             return `Alerta de fraude do banco emissor${d.fraudType ? ` — ${d.fraudType}` : ''}`
+        // Exclusão de conta do dono (LGPD).
+        case 'OWNERSHIP_TRANSFERRED':
+            return `Dono excluiu a conta e passou a empresa para outra pessoa${d.graceUntil ? ` (pagamento a regularizar até ${date(String(d.graceUntil))})` : ''}`
+        case 'WORKSPACE_CLOSED':
+            return `Empresa encerrada pela exclusão da conta do dono${typeof d.keptProposals === 'number' ? ` (${d.keptProposals} proposta(s) aceita(s) guardada(s) como comprovante)` : ''}`
     }
 }

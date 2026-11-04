@@ -80,6 +80,8 @@ export type WorkspaceEventType =
     | 'PAYMENT_DISPUTED'
     | 'PAYMENT_REFUNDED'
     | 'FRAUD_WARNING'
+    | 'OWNERSHIP_TRANSFERRED'
+    | 'WORKSPACE_CLOSED'
 
 export type WorkspaceEvent = { id: string; type: WorkspaceEventType; detail: Record<string, unknown> | null; createdAt: string }
 
