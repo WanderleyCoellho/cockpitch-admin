@@ -25,6 +25,10 @@ describe('formatação', () => {
         const base = { id: '1', createdAt: '2026-10-08T00:00:00Z' }
         expect(eventText({ ...base, type: 'PLAN_CHANGED', detail: { from: 'STARTER', to: 'PRO' } })).toBe('Mudou de Essencial para Profissional')
         expect(eventText({ ...base, type: 'COURTESY_GRANTED', detail: { planTier: 'AGENCY', note: 'Parceiro' } })).toBe('Cortesia concedida (Equipe) — Parceiro')
+        expect(eventText({ ...base, type: 'WORKSPACE_CLOSED', detail: { keptProposals: 2 } })).toBe(
+            'Empresa encerrada pela exclusão da conta do dono (2 proposta(s) aceita(s) guardada(s) como comprovante)'
+        )
+        expect(eventText({ ...base, type: 'OWNERSHIP_TRANSFERRED', detail: { graceUntil: null } })).toBe('Dono excluiu a conta e passou a empresa para outra pessoa')
         expect(eventText({ ...base, type: 'PAYMENT_DISPUTED', detail: { amountCents: 9900, reason: 'fraudulent' } }).replace(/\s/g, ' ')).toBe('Contestação aberta no cartão (R$ 99) — motivo: fraudulent')
         expect(eventText({ ...base, type: 'PAYMENT_REFUNDED', detail: { refundedCents: 4950, fullyRefunded: false } }).replace(/\s/g, ' ')).toBe('Reembolso parcial (R$ 49,50)')
         expect(eventText({ ...base, type: 'FRAUD_WARNING', detail: { fraudType: 'unauthorized_use_of_card' } })).toBe('Alerta de fraude do banco emissor — unauthorized_use_of_card')
